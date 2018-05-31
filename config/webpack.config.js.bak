@@ -1,0 +1,45 @@
+const path = require('path'),
+  dts = require('dts-bundle'),
+  packageName = require('../package.json').name,
+  outPath = path.resolve(__dirname, './../lib');
+
+module.exports = {
+  mode: 'production',
+  entry: './src/index.ts',
+  output: {
+    filename: 'index.umd.js',
+    path: outPath,
+    libraryTarget: 'umd',
+    globalObject: 'this'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+        options: {
+          configFile: path.resolve(__dirname, 'webpack.tsconfig.json')
+        }
+      }
+    ]
+  },
+  resolve: {
+    extensions: [ '.ts', '.js' ]
+  },
+  plugins: [
+    {
+      apply: function(compiler) {
+        compiler.hooks.done.tap('dts', function() {
+          dts.bundle({
+            name: packageName,
+            main: outPath + '/src/index.d.ts',
+            out: outPath + '/index.d.ts',
+            removeSource: true,
+            outputAsModuleFolder: true
+          });
+        });
+      }
+    }
+  ]
+};
