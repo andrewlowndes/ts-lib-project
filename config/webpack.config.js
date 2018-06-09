@@ -1,27 +1,45 @@
-const path = require('path');
+const path = require('path'),
+  packageName = require('../package.json').name;
 
-module.exports = {
-  mode: 'production',
-  entry: './src/index.ts',
-  output: {
-    filename: 'index.umd.js',
-    path: path.resolve(__dirname, './../lib'),
-    libraryTarget: 'umd',
-    globalObject: 'this'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.ts?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
-        options: {
-          configFile: path.resolve(__dirname, 'webpack.tsconfig.json')
+const libPath = path.resolve(__dirname, './../lib'),
+  settings = {
+    mode: 'production',
+    entry: './src/index.ts',
+    module: {
+      rules: [
+        {
+          test: /\.ts?$/,
+          loader: 'ts-loader',
+          exclude: /node_modules/,
+          options: {
+            configFile: path.resolve(__dirname, 'webpack.tsconfig.json')
+          }
         }
-      }
-    ]
+      ]
+    },
+    resolve: {
+      extensions: [ '.ts', '.js' ]
+    }
+  };
+
+module.exports = [
+  {
+    ...settings,
+    output: {
+      filename: packageName + '.umd.js',
+      path: libPath,
+      libraryTarget: 'umd',
+      globalObject: 'this'
+    }
   },
-  resolve: {
-    extensions: [ '.ts', '.js' ]
+  {
+    ...settings,
+    output: {
+      filename: packageName + '.min.js',
+      path: libPath,
+      libraryTarget: 'umd',
+      globalObject: 'this'
+    },
+    externals: {}
   }
-};
+];

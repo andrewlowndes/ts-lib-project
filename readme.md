@@ -33,26 +33,18 @@ The entry file for compiling and running the Typescript is 'src/index.ts'. Add y
 Add your tests to the src directory (or subdirectory) with the file extension '.spec.ts'.
 
 ### Add 3rd party libraries
-Install the library via:
-```
-npm i {libraryName}
-```
+Install the library via `npm i {libraryName}`
 
-e.g. 
-```
-npm i jquery
-```
-```
-npm i rxjs
-```
+e.g. `npm i jquery`, `npm i rxjs`
+
 
 Start using the library via ES6 import:
 
 e.g. 
-```
+```javascript
 import * as jquery from 'jquery';
 ```
-```
+```javascript
 import { Subject } from 'rxjs';
 ```
 
@@ -60,18 +52,27 @@ import { Subject } from 'rxjs';
 If you include this library via npm, you can add to the generated umd js file to the module resolution being used.
 
 e.g a systemjs config would contain for the following if the library name was 'ts-lib-project':
-```
+```javascript
 System.config({
   paths: {
     'npm:': 'node_modules/'
   },
   map: {
-    'ts-lib-project': 'npm:ts-lib-project/lib/index.umd.js' //can use the umd or just index.js if we can want better dev for the module itself
+    'ts-lib-project': 'npm:ts-lib-project/lib/ts-lib-project.umd.js' //can use the min file for debugging the 3rd party library
   }
 });
 ```
 
-If using a bundler like webpack, it would automatically extract the correct code into the bundle served to the browser via imports.
+If using a bundler like webpack, it would automatically extract the correct code into the bundle served to the browser via imports. However to exclude the library from being bundled into the generated min file, add the dependency to the `webpack.config.js` file in the externals property.
+
+e.g. where `import moment from 'moment';` would be used for the 3rd party library 'momentjs', excluding this from the min bundle requires:
+```javascript
+{
+  externals: {
+    moment: 'moment'
+  }
+}
+```
 
 ## Licence
 All code is licenced under MIT.
