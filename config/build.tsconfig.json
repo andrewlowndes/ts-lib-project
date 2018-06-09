@@ -4,7 +4,7 @@
     "removeComments": true,
     "sourceMap": false,
     "declaration": true,
-    "module": "UMD",
+    "module": "commonjs",
     "outDir": "../lib/"
   },
   "include": [
